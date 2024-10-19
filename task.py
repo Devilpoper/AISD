@@ -5,43 +5,42 @@ class Node:
         self.right = right
 
 
-def find_node(root: Node, value: int) -> list:
-    cur = root
-    roots_list = []
-    while cur.left is not None and cur.right is not None:
-        if cur.val == value:
-            roots_list.append(cur.val)
-            return roots_list
-        elif cur.val > value:
-            roots_list.append(cur.val)
-            cur = cur.left
-        else:
-            roots_list.append(cur.val)
-            cur = cur.right
+def get_high(root:Node):
+    if root is None:
+        return 0
+    if root.right is None and root.left is None:
+        return 1
+    high_l, high_r = 0, 0
 
-    if cur.val == value:
-        roots_list.append(cur.val)
-        return roots_list
-    elif cur.val > value and cur.left is not None:
-        roots_list.append(cur.val)
-    elif cur.val < value and cur.right is not None:
-        roots_list.append(cur.val)
-    return roots_list
+    if root.left is not None:
+        high_l = get_high(root.left)
 
-def solve(root: Node, p: int, q: int) -> int:
-    p_roots = find_node(root, p)
-    q_roots = find_node(root, q)
-    roots_set = list(set(p_roots) & set(q_roots))
-    return min(roots_set)
+    if root.right is not None:
+        high_r = get_high(root.right)
+
+    return max(high_r, high_l) + 1
 
 
-t1 = Node(14)
-t2 = Node(48, left=t1)
-t3 = Node(51)
-t4 = Node(50, left=t2, right=t3)
-t7 = Node(63)
-t8 = Node(78)
-t6 = Node(68, left=t7, right=t8)
-t5 = Node(55, left = t4, right=t6)
+def compare_high(root):
+    if abs(get_high(root.left) - get_high(root.right)) > 1:
+        return False
+    return True
 
-print(solve(t5, 68, 51))
+def solve(root:Node) -> bool:
+    if root is None:
+        return True
+    if compare_high(root) is False:
+        return False
+    return solve(root.left) and solve(root.right)
+
+def diff(root: Node):
+    if root.right is None and root.left is None:
+        return 99999999
+    left_m, right_m = 9999999, 9999999
+    if root.left is not None:
+        left_m = min(abs(root.val - root.left.val), diff(root.left))
+
+    if root.right is not None:
+        right_m = min(abs(root.val - root.right.val), diff(root.right))
+
+    return min(left_m, right_m)
