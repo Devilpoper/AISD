@@ -91,3 +91,46 @@ def delete_value(val, root):
         else:
             return l
     return balance(root)
+
+def get_high(root:Node):
+    if root is None:
+        return 0
+    if root.right is None and root.left is None:
+        return 1
+    high_l, high_r = 0, 0
+
+    if root.left is not None:
+        high_l = get_high(root.left)
+
+    if root.right is not None:
+        high_r = get_high(root.right)
+
+    return max(high_r, high_l) + 1
+
+
+def compare_high(root):
+    if abs(get_high(root.left) - get_high(root.right)) > 1:
+        return False
+    return True
+
+def check(root:Node) -> bool:
+    if root is None:
+        return True
+    if compare_high(root) is False:
+        return False
+    return check(root.left) and check(root.right)
+
+def print_tree(root: Node):
+    if root is None:
+        return
+    print(f"root: {root.val}, ", end=" ")
+    if root.left is not None:
+        print(f"left_child - {root.left.val}")
+    else:
+        print(f"left_child - None")
+    if root.right is not None:
+        print(f"    right_child - {root.right.val}\n")
+    else:
+        print(f"    right_child - None\n")
+    print_tree(root.left)
+    print_tree(root.right)
